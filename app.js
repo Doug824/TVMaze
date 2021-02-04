@@ -9,7 +9,11 @@ async function searchShows(query) {
     return {
       id: show.id,
       name: show.name,
+      genres: show.genres,
+      status: show.status,
+      runtime: show.runtime,
       summary: show.summary,
+      cast: show.cast,
       image: show.image ? show.image.medium : NO_IMAGE,
     };
   });
@@ -22,6 +26,12 @@ function populateShows(shows) {
   const $showsList = $("#shows-list");
   $showsList.empty();
   for (let show of shows) {
+    let showSummary;
+    if (show.summary) {
+      showSummary = show.summary;
+    } else {
+      showSummary = "No summary provided";
+    }
     let $item = $(
       `<div class="col-md-6 col-lg-3 Show" data-show-id="${show.id}">
         <div class="card" data-show-id="${show.id}">
@@ -70,9 +80,9 @@ async function getEpisodes(id) {
 async function getActors(id) {
   let response = await axios.get(`http://api.tvmaze.com/shows/${id}/cast`);
   let actors = response.data.map(cast => ({
-    id: cast.id,
-    name: cast.name,
-    character: cast.character,
+    id: cast.person.id,
+    character: cast.character.name,
+    person: cast.person.name,
   }));
   return actors;
 }
@@ -104,8 +114,8 @@ function populateActors(actors) {
   for (let actor of actors) {
     let $item = $(
       `<li>
-        ${actor.name}
-        (Plays as ${actor.character})
+        ${actor.character}
+        (Played by ${actor.person})
       </li>
       `);
     $actorsList.append($item);
@@ -127,4 +137,3 @@ $("#shows-list").on("click", ".get-cast", async function handleEpisodeClick(e) {
   let actors = await getActors(showId);
   populateActors(actors);
 });
-/** Use a data source tag so you don't have to climb up the tree */
