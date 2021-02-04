@@ -1,9 +1,9 @@
-const NO_IMAGE = "http://tinyurl.com/missing-tv";
+const NO_IMAGE = "https://tinyurl.com/missing-tv";
 
 /** Given a query string, return array of matching shows: { id, name, summary, image, episodesUrl }*/
 async function searchShows(query) {
   let response = await axios.get(
-    `http://api.tvmaze.com/search/shows?q=${query}`);
+    `https://api.tvmaze.com/search/shows?q=${query}`);
   let shows = response.data.map(result => {
     let show = result.show;
     return {
